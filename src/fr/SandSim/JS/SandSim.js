@@ -13,30 +13,22 @@ const ncol = WIDTH / pixel;
 
 const grid = makeGrid();
 
-// canvas.addEventListener("mousedown", function (event) {
-//   console.log("test");
-// });
+let mouseDown = false;
+let mouseX = 0;
+let mouseY = 0;
 
 canvas.addEventListener("mousedown", function (event) {
-  const x = Math.floor(event.offsetX / pixel);
-  const y = Math.floor(event.offsetY / pixel);
-  drawSand(x, y);
+  mouseDown = true;
 });
 
-function drawGrid() {
-  ctx.beginPath();
-  for (let i = 0; i <= ncol; i++) {
-    ctx.moveTo(i * pixel, 0);
-    ctx.lineTo(i * pixel, HEIGHT);
-    ctx.stroke();
-  }
-  for (let i = 0; i <= nrow; i++) {
-    ctx.moveTo(0, i * pixel);
-    ctx.lineTo(HEIGHT, i * pixel);
-    ctx.stroke();
-  }
-  ctx.closePath();
-}
+canvas.addEventListener("mouseup", function (event) {
+  mouseDown = false;
+});
+
+canvas.addEventListener("mousemove", function (event) {
+  mouseX = Math.floor(event.offsetX / pixel);
+  mouseY = Math.floor(event.offsetY / pixel);
+});
 
 function makeGrid() {
   const array = [];
@@ -61,7 +53,7 @@ function drawSand(x, y) {
 }
 
 function eraseSand(x, y) {
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "#000033";
   ctx.fillRect(x * pixel, y * pixel, pixel, pixel);
   grid[x][y] = 0;
 }
@@ -69,6 +61,9 @@ function eraseSand(x, y) {
 function animate(grid) {
   requestAnimationFrame(animate);
   scan();
+  if (mouseDown) {
+    drawSand(mouseX, mouseY);
+  }
 }
 
 function scan() {
@@ -78,6 +73,14 @@ function scan() {
         if (canFall(i, j + 1)) {
           eraseSand(i, j);
           drawSand(i, j + 1);
+        } else {
+          if (i > 0 && canFall(i - 1, j + 1)) {
+            eraseSand(i, j);
+            drawSand(i - 1, j + 1);
+          } else if (i < ncol - 1 && canFall(i + 1, j + 1)) {
+            eraseSand(i, j);
+            drawSand(i + 1, j + 1);
+          }
         }
       }
     }
