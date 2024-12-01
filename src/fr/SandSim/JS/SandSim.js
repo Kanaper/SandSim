@@ -17,10 +17,9 @@ const grid = makeGrid();
 let mouseDown = false;
 let mouseX = 0;
 let mouseY = 0;
-
-const colors = ["yellow", "red", "blue", "green", "purple", "orange", "pink"];
-let color = colors[0];
-let count = 0;
+let r = 255,
+  g = 255;
+let color;
 
 canvas.addEventListener("mousedown", function (event) {
   nextColor();
@@ -89,11 +88,11 @@ function drawSandBall(x, y) {
 }
 
 function nextColor() {
-  color = colors[count];
-  count = ++count % colors.length;
-  console.log(colors.length);
-  console.log(count);
-  console.log(color);
+  if (g <= 170) {
+    r = 255;
+    g = 255;
+  }
+  color = `rgb(${(r -= 1)}, ${(g -= 12)}, 0)`;
 }
 
 function isEmpty(x, y) {
