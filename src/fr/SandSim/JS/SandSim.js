@@ -4,6 +4,7 @@ const ctx = canvas.getContext("2d");
 const WIDTH = 600;
 const HEIGHT = 900;
 
+//modifie la taille du canvas
 canvas.height = HEIGHT;
 canvas.width = WIDTH;
 
@@ -17,7 +18,12 @@ let mouseDown = false;
 let mouseX = 0;
 let mouseY = 0;
 
+const colors = ["yellow", "red", "blue", "green", "purple", "orange", "pink"];
+let color = colors[0];
+let count = 0;
+
 canvas.addEventListener("mousedown", function (event) {
+  nextColor();
   mouseDown = true;
 });
 
@@ -47,9 +53,13 @@ function canFall(x, y) {
 }
 
 function drawSand(x, y) {
-  ctx.fillStyle = "yellow";
-  ctx.fillRect(x * pixel, y * pixel, pixel, pixel);
-  grid[x][y] = 1;
+  if (!isOutOfBound(x, y)) {
+    if (isEmpty(x, y)) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x * pixel, y * pixel, pixel, pixel);
+      grid[x][y] = 1;
+    }
+  }
 }
 
 function eraseSand(x, y) {
@@ -62,8 +72,36 @@ function animate(grid) {
   requestAnimationFrame(animate);
   scan();
   if (mouseDown) {
-    drawSand(mouseX, mouseY);
+    drawSandBall(mouseX, mouseY);
   }
+}
+
+function drawSandBall(x, y) {
+  drawSand(x, y);
+  drawSand(x + 1, y);
+  drawSand(x - 1, y);
+  drawSand(x, y + 1);
+  drawSand(x, y - 1);
+  drawSand(x + 1, y + 1);
+  drawSand(x - 1, y - 1);
+  drawSand(x + 1, y - 1);
+  drawSand(x - 1, y + 1);
+}
+
+function nextColor() {
+  color = colors[count];
+  count = ++count % colors.length;
+  console.log(colors.length);
+  console.log(count);
+  console.log(color);
+}
+
+function isEmpty(x, y) {
+  return grid[x][y] == 0;
+}
+
+function isOutOfBound(x, y) {
+  return x < 0 || x >= ncol || y < 0 || y >= nrow;
 }
 
 function scan() {
