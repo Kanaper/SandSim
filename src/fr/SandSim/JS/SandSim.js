@@ -76,15 +76,11 @@ function animate(grid) {
 }
 
 function drawSandBall(x, y) {
-  drawSand(x, y);
-  drawSand(x + 1, y);
-  drawSand(x - 1, y);
-  drawSand(x, y + 1);
-  drawSand(x, y - 1);
-  drawSand(x + 1, y + 1);
-  drawSand(x - 1, y - 1);
-  drawSand(x + 1, y - 1);
-  drawSand(x - 1, y + 1);
+  for (let i = x - 2; i <= x + 2; i++) {
+    for (let j = y - 2; j <= y + 2; j++) {
+      drawSand(i, j);
+    }
+  }
 }
 
 function nextColor() {
@@ -104,19 +100,29 @@ function isOutOfBound(x, y) {
 }
 
 function scan() {
-  for (let i = 0; i < ncol; i++) {
-    for (let j = 0; j < nrow; j++) {
+  for (let i = ncol - 1; i >= 0; i--) {
+    for (let j = nrow - 1; j >= 0; j--) {
       if (grid[i][j] == 1) {
         if (canFall(i, j + 1)) {
           eraseSand(i, j);
           drawSand(i, j + 1);
         } else {
-          if (i > 0 && canFall(i - 1, j + 1)) {
-            eraseSand(i, j);
-            drawSand(i - 1, j + 1);
-          } else if (i < ncol - 1 && canFall(i + 1, j + 1)) {
-            eraseSand(i, j);
-            drawSand(i + 1, j + 1);
+          if (Math.random() < 0.5) {
+            if (i < ncol - 1 && canFall(i + 1, j + 1)) {
+              eraseSand(i, j);
+              drawSand(i + 1, j + 1);
+            } else if (i > 0 && canFall(i - 1, j + 1)) {
+              eraseSand(i, j);
+              drawSand(i - 1, j + 1);
+            }
+          } else {
+            if (i > 0 && canFall(i - 1, j + 1)) {
+              eraseSand(i, j);
+              drawSand(i - 1, j + 1);
+            } else if (i < ncol - 1 && canFall(i + 1, j + 1)) {
+              eraseSand(i, j);
+              drawSand(i + 1, j + 1);
+            }
           }
         }
       }
